@@ -4,11 +4,12 @@
 #include "engine.h"
 
 // Constructor & Destructor
-Value::Value(float data, std::vector<Value> children, std::string op)
-{
-    this->data = data;
-    this->children = children;
-    this->op = op;
+Value::Value(float data, std::vector<Value> children, std::string op, std::string label)
+    : data(data), children(children), op(op), label(label) { grad = 0.0; }
+Value::Value(float data, std::string label) : data(data), label(label) {
+    children = std::vector<Value>();
+    op = "";
+    grad = 0.0;
 }
 Value::~Value() {
     // std::cout << "Value destructor called" << std::endl;

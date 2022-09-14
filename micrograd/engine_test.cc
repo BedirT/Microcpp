@@ -55,13 +55,17 @@ void test_value_set_label()
 void test_graph_system()
 {
     // Test graph system
-    Value v1(5.0);
-    Value v2(2.0);
+    Value v1(5.0, "v1");
+    Value v2(2.0, "v2");
     Value v3 = v1 + v2;
+    v3.set_label("v3");
+    Value v4 = v1 - v2;
+    v4.set_label("v4");
+    Value v5 = v3 * v4;
+    v5.set_label("v5");
 
-    GraphSystem gs;
-    gs.create_from_root(v3);
-    gs.write_to_file("graph.dot");
+    Graph gs;
+    gs.draw(v5, "graph");
 }
 
 int main()
