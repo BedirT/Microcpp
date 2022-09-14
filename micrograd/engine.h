@@ -21,15 +21,17 @@ public:
     Value(float data, std::string label);
     ~Value();
 
-    void set(float data) { this->data = data; }
+    void set_data(float data) { this->data = data; }
     void set_label(std::string label) { this->label = label; }
     void set_grad(float grad) { this->grad = grad; }
 
-    float get() const { return data; }
+    float get_data() const { return data; }
     float get_grad() const { return grad; }
     std::string get_label() const { return label; }
     std::vector<Value> get_children() const { return children; }
     std::string get_op() const { return op; }
+
+    void update_grad(float grad) { this->grad += grad; }
 
     std::string to_string() const {
         std::stringstream ss;
@@ -48,6 +50,16 @@ public:
     Value& operator-=(const Value& other);
     Value& operator*=(const Value& other);
     Value& operator/=(const Value& other);
+
+    // define overloaded operators for float
+    Value operator+(float other) const;
+    Value operator-(float other) const;
+    Value operator*(float other) const;
+    Value operator/(float other) const;
+    Value& operator+=(float other);
+    Value& operator-=(float other);
+    Value& operator*=(float other);
+    Value& operator/=(float other);
 
     // define comparison operators
     bool operator==(const Value& other) const;
