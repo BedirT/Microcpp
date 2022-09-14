@@ -1,6 +1,8 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <cmath>
+#include <unordered_map>
 
 class Value
 {
@@ -46,4 +48,22 @@ public:
     Value& operator-=(const Value& other);
     Value& operator*=(const Value& other);
     Value& operator/=(const Value& other);
+
+    // define comparison operators
+    bool operator==(const Value& other) const;
+    bool operator!=(const Value& other) const;
+    bool operator<(const Value& other) const;
+    bool operator<=(const Value& other) const;
+    bool operator>(const Value& other) const;
+    bool operator>=(const Value& other) const;
+
+    // define math functions
+    Value pow(float exponent) const;
+    Value exp(float base = M_E) const;
+    Value tanh() const;
+
+    // gradient
+    void backward();
+    void backward_single();
+    void build_topo(std::vector<Value*>& sorted, std::unordered_map<Value*, bool>& visited, Value* node);
 };
