@@ -43,9 +43,9 @@ public:
         ss << "node" << node_count;
         std::string node_name = ss.str();
         if (is_op) {
-            graph += "\t" + node_name + " [label=\"" + label + "\", shape=circle, " + args + "];\n";
+            graph += "\t" + node_name + " [label=\"" + label + "\",shape=circle," + args + "];\n";
         } else {
-            graph += "\t" + node_name + " [label=\"" + label + "\", shape=record, " + args + "];\n";
+            graph += "\t" + node_name + " [label=\"" + label + "\",shape=record," + args + "];\n";
         }
         node_count++;
         return node_name;
@@ -57,12 +57,15 @@ public:
 
     std::string create_from_root(const Value& v) {
         std::string label = get_label_rpr(v);
-        std::string node_name = add_node(label, "color=red");
+        std::string node_name = add_node(label, 
+            "color=white,style=\"filled,rounded\",fillcolor=\"indianred4:lightcoral\",fontcolor=white,border=3");
         std::string connection_node = node_name;
         // if op is not empty add op node
         if (v.get_op() != "") {
             std::string op_label = v.get_op();
-            std::string op_name = add_node(op_label, "color=black", true);
+            std::string op_name = add_node(op_label, 
+            "color=white,style=filled,fillcolor=\"webmaroon\",fontcolor=oldlace"
+            , true);
             add_edge(op_name, node_name);
             connection_node = op_name;
         }
