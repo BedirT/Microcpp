@@ -1,0 +1,10 @@
+# C++
+*.out
+*.o
+
+# Graphviz
+*.dot
+*.pdf
+
+# Vscode
+.vscode
