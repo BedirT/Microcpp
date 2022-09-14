@@ -92,6 +92,6 @@ public:
     }
 
     ~Graph() {
-        std::cout << graph << std::endl;
+        // std::cout << graph << std::endl;
     }
 };
