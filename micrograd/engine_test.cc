@@ -66,6 +66,47 @@ void test_graph_system()
 
     Graph gs;
     gs.draw(v5, "graph");
+    // Todo: assert that graph was drawn
+}
+
+void test_tanh_function()
+{
+    // Test tanh function
+    Value v1(5.0, "v1");
+    Value v2 = v1.tanh();
+    v2.set_label("v2");
+
+    Graph gs;
+    gs.draw(v2, "graph_tanh");
+    // Todo: assert that graph was drawn
+}
+
+void test_gradient_calculation_single_neuron()
+{
+    // Test gradient calculation
+    // variables
+    Value x1 = Value(2.0, "x1");
+    Value x2 = Value(0.0, "x2");
+    // weights
+    Value w1 = Value(-3.0, "w1");
+    Value w2 = Value(1.0, "w2");
+    // bias
+    Value b = Value(6.8813735870195432, "b");
+    // neuron (x1*w1 + x2*w2 + b)
+    Value x1w1 = x1 * w1; x1w1.set_label("x1w1");
+    Value x2w2 = x2 * w2; x2w2.set_label("x2w2");
+    Value x1w1_x2w2 = x1w1 + x2w2; x1w1_x2w2.set_label("x1w1_x2w2");
+    Value n = x1w1_x2w2 + b; n.set_label("n");
+    // output w tanh
+    Value o = n.tanh(); o.set_label("o");
+    assert(o.get_children()[0] == n);
+    assert(n.get_children()[0] == x1w1_x2w2);
+    assert(n.get_children()[1] == b);
+
+    o.backward();
+    Graph gs;
+    gs.draw(o, "graph_single_neuron");
+    std::cout << x1.get_grad() << std::endl;
 }
 
 int main()
@@ -76,4 +117,6 @@ int main()
     test_value_operations();
     test_value_set_label();
     test_graph_system();
+    test_tanh_function();
+    test_gradient_calculation_single_neuron();
 }
