@@ -31,12 +31,27 @@ public:
     std::vector<Value> get_children() const { return children; }
     std::string get_op() const { return op; }
 
+    std::string get_key() const {
+        std::stringstream ss;
+        if (label != "") {
+            ss << label;
+            return ss.str();
+        } else {
+            ss << this;
+            // remove 0x from the beginning
+            return ss.str().substr(2);
+        }
+    }
+
     void update_grad(float grad) { this->grad += grad; }
 
     std::string to_string() const {
         std::stringstream ss;
-        ss.precision(2);
+        ss.precision(4);
         ss << std::fixed << data;
+        ss << " (" << op << ")";
+        ss << " [" << label << "]";
+        ss << " {" << grad << "}";
         return ss.str();
     }
     

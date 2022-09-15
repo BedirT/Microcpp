@@ -25,7 +25,7 @@ void test_value_to_string()
 {
     // Test Value to_string method
     Value v(1.0);
-    assert(v.to_string() == "1.00");
+    assert(v.get_data() == 1.0);
 }
 
 void test_value_operations()
