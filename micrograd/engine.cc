@@ -35,12 +35,6 @@ Value Value::operator*(const Value& other) const
     return Value(this->data * other.data, { *this, other }, "*");
 }
 
-Value Value::operator/(const Value& other) const
-{
-    // Quotient of two values
-    return Value(this->data / other.data, { *this, other }, "/");
-}
-
 Value Value::operator-() const
 {
     // Negation of a value
@@ -71,14 +65,6 @@ Value& Value::operator*=(const Value& other)
     return *this;
 }
 
-Value& Value::operator/=(const Value& other)
-{
-    // Divide a value by another value
-    data /= other.data;
-    children = { *this, other };
-    return *this;
-}
-
 // Overloaded operators for float
 Value Value::operator+(float other) const 
 { 
@@ -95,41 +81,6 @@ Value Value::operator*(float other) const
     Value other_value = Value(other);
     return *this * other_value;
 }
-Value Value::operator/(float other) const 
-{ 
-    Value other_value = Value(other);
-    return *this / other_value;
-}
-Value& Value::operator+=(float other)
-{
-    data += other;
-    children = { *this };
-    return *this;
-}
-Value& Value::operator-=(float other)
-{
-    data -= other;
-    children = { *this };
-    return *this;
-}
-Value& Value::operator*=(float other)
-{
-    data *= other;
-    children = { *this };
-    return *this;
-}
-Value& Value::operator/=(float other)
-{
-    data /= other;
-    children = { *this };
-    return *this;
-}
-
-// Overloaded operators for float and int if the float or int is on the left
-// Value operator+(float other, const Value& value) { return Value(other + value.get_data(), { value }); }
-// Value operator-(float other, const Value& value) { return Value(other - value.get_data(), { value }); }
-// Value operator*(float other, const Value& value) { return Value(other * value.get_data(), { value }); }
-// Value operator/(float other, const Value& value) { return Value(other / value.get_data(), { value }); }
 
 // Comparison operators
 bool Value::operator==(const Value& other) const
@@ -164,18 +115,6 @@ bool Value::operator>=(const Value& other) const
 }
 
 // Math functions
-Value Value::pow(float exponent) const
-{
-    // Power function
-    return Value(std::pow(this->data, exponent), { *this }, "pow");
-}
-
-Value Value::exp() const
-{
-    // Exponential function (e^x)
-    return Value(std::exp(this->data), { *this }, "exp");
-}
-
 Value Value::tanh() const
 {
     // Hyperbolic tangent function
@@ -209,15 +148,6 @@ void Value::backward_single()
     } else if (op == "*") {
         children[0].update_grad(grad * children[1].get_data());
         children[1].update_grad(grad * children[0].get_data());
-    } else if (op == "/") {
-        children[0].update_grad(grad / children[1].get_data());
-        children[1].update_grad(-grad * children[0].get_data() / (children[1].get_data() * children[1].get_data()));
-        // Check this one
-    } else if (op == "pow") {
-        children[0].update_grad(grad * children[1].get_data() * std::pow(children[0].get_data(), children[1].get_data() - 1));
-    } else if (op == "exp") {
-        children[0].update_grad(grad * std::exp(children[0].get_data()));
-        
     } else if (op == "tanh") {
         children[0].update_grad(grad * (1 - std::pow(std::tanh(children[0].get_data()), 2)));
     } else {

@@ -44,22 +44,22 @@ public:
     Value operator+(const Value& other) const;
     Value operator-(const Value& other) const;
     Value operator*(const Value& other) const;
-    Value operator/(const Value& other) const;
+    // Value operator/(const Value& other) const;
     Value operator-() const;
     Value& operator+=(const Value& other);
     Value& operator-=(const Value& other);
     Value& operator*=(const Value& other);
-    Value& operator/=(const Value& other);
+    // Value& operator/=(const Value& other);
 
     // define overloaded operators for float
     Value operator+(float other) const;
     Value operator-(float other) const;
     Value operator*(float other) const;
-    Value operator/(float other) const;
+    // Value operator/(float other) const;
     Value& operator+=(float other);
     Value& operator-=(float other);
     Value& operator*=(float other);
-    Value& operator/=(float other);
+    // Value& operator/=(float other);
 
     // define comparison operators
     bool operator==(const Value& other) const;
@@ -70,8 +70,8 @@ public:
     bool operator>=(const Value& other) const;
 
     // define math functions
-    Value pow(float exponent) const;
-    Value exp() const;
+    // Value pow(float exponent) const;
+    // Value exp() const;
     Value tanh() const;
 
     // gradient
