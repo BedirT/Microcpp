@@ -27,28 +27,22 @@ private:
     std::unordered_map<std::string, std::pair<std::string, std::string>> edges;
 
 public:
-    Graph() : graph("digraph G {\n rankdir=LR;\n"), node_count(0) {}
+    Graph() : graph("digraph G {\n rankdir=LR;\n splines=ortho"), node_count(0) {}
 
     std::string get_label_rpr(std::string node_key) {
         std::string label = std::get<1>(nodes[node_key]);
-        if (label == "") {
-            label = std::get<0>(nodes[node_key]);
-            return label;
-        } else {
-
-            float data = std::get<4>(nodes[node_key]);
-            float grad = std::get<3>(nodes[node_key]);
-            // arrange precision
-            std::stringstream ss;
-            ss << "{ " << label << " | ";
-            ss.precision(4);
-            ss << std::fixed << data;
-            ss << " | ";
-            ss.precision(4);
-            ss << std::fixed << grad;
-            ss << " }";
-            return ss.str();
-        }
+        float data = std::get<4>(nodes[node_key]);
+        float grad = std::get<3>(nodes[node_key]);
+        // arrange precision
+        std::stringstream ss;
+        ss << "{ " << label << " | ";
+        ss.precision(4);
+        ss << std::fixed << data;
+        ss << " | ";
+        ss.precision(4);
+        ss << std::fixed << grad;
+        ss << " }";
+        return ss.str();
     }
 
     std::string get_op_str(std::string op) {
@@ -87,23 +81,23 @@ public:
         graph += ss.str();
     }
 
-    void trace_nodes_and_edges(Value v) {
-        if (nodes.find(v.get_key()) != nodes.end()) {
+    void trace_nodes_and_edges(Value* v) {
+        if (nodes.find(v->get_key()) != nodes.end()) {
             return;
         }
-        std::string node_key = v.get_key();
-        nodes[node_key] = std::make_tuple(v.to_string(), v.get_label(), v.get_op(), v.get_grad(), v.get_data());
-        for (Value& child : v.get_children()) {
+        std::string node_key = v->get_key();
+        nodes[node_key] = std::make_tuple(v->to_string(), v->get_label(), v->get_op(), v->get_grad(), v->get_data());
+        for (Value& child : v->get_children()) {
             std::string child_key = child.get_key();
             if (edges.find(child_key + node_key) == edges.end()) {
                 edges[child_key + node_key] = std::make_pair(child_key, node_key);
-                trace_nodes_and_edges(child);
+                trace_nodes_and_edges(&child);
             }
         }
     }
 
     void trace_graph(Value v) {
-        trace_nodes_and_edges(v);
+        trace_nodes_and_edges(&v);
         for (auto& node : nodes) {
             std::string node_key = node.first;
             std::string label = get_label_rpr(node_key);
@@ -135,6 +129,7 @@ public:
         trace_graph(v);
         write_to_file(filename);
         
+        // gout renders the graph
         std::string cmd = "dot -Tpng " + filename + ".dot -o " + filename + ".png";
         system(cmd.c_str());
     }
