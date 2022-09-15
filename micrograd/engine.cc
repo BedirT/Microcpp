@@ -170,10 +170,10 @@ Value Value::pow(float exponent) const
     return Value(std::pow(this->data, exponent), { *this }, "pow");
 }
 
-Value Value::exp(float base) const
+Value Value::exp() const
 {
-    // Exponential function
-    return Value(std::pow(base, this->data), { *this }, "exp");
+    // Exponential function (e^x)
+    return Value(std::exp(this->data), { *this }, "exp");
 }
 
 Value Value::tanh() const
@@ -216,7 +216,8 @@ void Value::backward_single()
     } else if (op == "pow") {
         children[0].update_grad(grad * children[1].get_data() * std::pow(children[0].get_data(), children[1].get_data() - 1));
     } else if (op == "exp") {
-        children[0].update_grad(grad * std::pow(children[1].get_data(), children[0].get_data()));
+        children[0].update_grad(grad * std::exp(children[0].get_data()));
+        
     } else if (op == "tanh") {
         children[0].update_grad(grad * (1 - std::pow(std::tanh(children[0].get_data()), 2)));
     } else {

@@ -124,30 +124,31 @@ void test_float_ops()
     assert(v2.get_data() == 7.0);
 }
 
-// void test_advanced_gradient()
-// {
-//     Value x1 = Value(2.0, "x1");
-//     Value x2 = Value(0.0, "x2");
-//     // weights
-//     Value w1 = Value(-3.0, "w1");
-//     Value w2 = Value(1.0, "w2");
-//     // bias
-//     Value b = Value(6.8813735870195432, "b");
-//     // neuron (x1*w1 + x2*w2 + b)
-//     Value x1w1 = x1 * w1; x1w1.set_label("x1w1");
-//     Value x2w2 = x2 * w2; x2w2.set_label("x2w2");
-//     Value x1w1_x2w2 = x1w1 + x2w2; x1w1_x2w2.set_label("x1w1_x2w2");
-//     Value n = x1w1_x2w2 + b; n.set_label("n");
+void test_advanced_gradient()
+{
+    Value x1 = Value(2.0, "x1");
+    Value x2 = Value(0.0, "x2");
+    // weights
+    Value w1 = Value(-3.0, "w1");
+    Value w2 = Value(1.0, "w2");
+    // bias
+    Value b = Value(6.8813735870195432, "b");
+    // neuron (x1*w1 + x2*w2 + b)
+    Value x1w1 = x1 * w1; x1w1.set_label("x1w1");
+    Value x2w2 = x2 * w2; x2w2.set_label("x2w2");
+    Value x1w1_x2w2 = x1w1 + x2w2; x1w1_x2w2.set_label("x1w1_x2w2");
+    Value n = x1w1_x2w2 + b; n.set_label("n");
     
-//     Value e = (n * 2).exp(); e.set_label("e");
-//     Value o1 = (e - 1) ; o1.set_label("o1");
-//     Value o2 = (e + 1) ; o2.set_label("o2");
-//     Value o = o1 / o2; o.set_label("o");
+    Value e = (n * 2); e.set_label("e");
+    Value f = (e.exp()); f.set_label("f");
+    Value o1 = (f - 1) ; o1.set_label("o1");
+    Value o2 = (f + 1) ; o2.set_label("o2");
+    Value o = o1 / o2; o.set_label("o");
     
-//     o.backward();
-//     Graph gs;
-//     gs.draw(o, "graph_advanced");
-// }
+    o.backward();
+    Graph gs;
+    gs.draw(o, "graph_advanced");
+}
 
 int main()
 {

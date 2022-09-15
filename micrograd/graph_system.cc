@@ -13,6 +13,7 @@
 #include <string>
 #include <sstream>
 #include <fstream>
+#include <unordered_map>
 
 #include "engine.cc"
 
@@ -21,6 +22,8 @@ class Graph {
 private:
     std::string graph;
     int node_count;
+    std::unordered_map<std::string, bool> visited_nodes; // nodes
+    std::unordered_map<std::string, bool> visited_edges; // edges
 
 public:
     Graph() : graph("digraph G {\n rankdir=LR;\n"), node_count(0) {}
@@ -38,43 +41,56 @@ public:
         return label;
     }
 
-    std::string add_node(std::string label, std::string args="color=black", bool is_op=false) {
-        std::stringstream ss;
-        ss << "node" << node_count;
-        std::string node_name = ss.str();
+    void add_node(std::string id, std::string label, std::string args="color=black", bool is_op=false) {
         if (is_op) {
-            graph += "\t" + node_name + " [label=\"" + label + "\",shape=circle," + args + "];\n";
+            graph += "\t" + id + " [label=\"" + label + "\",shape=circle," + args + "];\n";
         } else {
-            graph += "\t" + node_name + " [label=\"" + label + "\",shape=record," + args + "];\n";
+            graph += "\t" + id + " [label=\"" + label + "\",shape=record," + args + "];\n";
         }
-        node_count++;
-        return node_name;
     }
 
     void add_edge(std::string from, std::string to) {
         graph += "\t" + from + " -> " + to + ";\n";
     }
 
+    std::string get_id(const Value& v) {
+        std::stringstream ss;
+        ss << "node";
+        std::string label = v.get_label();
+        if (label == "") {
+            ss << node_count;
+            node_count++;
+        } else {
+            ss << label;
+        }
+        return ss.str();
+    }
+
     std::string create_from_root(const Value& v) {
         std::string label = get_label_rpr(v);
-        std::string node_name = add_node(label, 
-            "color=white,style=\"filled,rounded\",fillcolor=\"indianred4:lightcoral\",fontcolor=white,border=3");
-        std::string connection_node = node_name;
+        std::string node_id = get_id(v);
+        add_node(node_id, label, "color=white,style=\"filled,rounded\",fillcolor=\"indianred4:lightcoral\",fontcolor=white,border=3");
+        std::string connection_id = node_id;
         // if op is not empty add op node
         if (v.get_op() != "") {
             std::string op_label = v.get_op();
-            std::string op_name = add_node(op_label, 
-            "color=white,style=filled,fillcolor=\"webmaroon\",fontcolor=oldlace"
-            , true);
-            add_edge(op_name, node_name);
-            connection_node = op_name;
+            std::string op_id = "op" + node_id;
+            add_node(op_id, op_label, "color=white,style=filled,fillcolor=\"webmaroon\",fontcolor=oldlace", true);
+            if (visited_edges.find(op_id + node_id) == visited_edges.end()) {
+                add_edge(op_id, node_id);
+                visited_edges[op_id + node_id] = true;
+            }
+            connection_id = op_id;
         }
         // add children
         for (const Value& child : v.get_children()) {
-            std::string child_name = create_from_root(child);
-            add_edge(child_name, connection_node);
+            std::string child_id = create_from_root(child);
+            if (visited_edges.find(child_id + connection_id) == visited_edges.end()) {
+                add_edge(child_id, connection_id);
+                visited_edges[child_id + connection_id] = true;
+            }
         }
-        return node_name;
+        return node_id;
     }
 
     void write_to_file(const std::string& filename) {

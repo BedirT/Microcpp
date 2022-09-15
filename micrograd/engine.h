@@ -71,7 +71,7 @@ public:
 
     // define math functions
     Value pow(float exponent) const;
-    Value exp(float base = M_E) const;
+    Value exp() const;
     Value tanh() const;
 
     // gradient
