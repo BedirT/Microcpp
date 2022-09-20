@@ -8,14 +8,15 @@ class Value
 {
 private:
     float data;
-    std::vector<Value> children;
+    // children are Value pointers to change use only the address of the Value
+    std::vector<Value*> children;
     std::string op;
     std::string label;
     float grad;
 
 public:
     Value(float data, 
-          std::vector<Value> children = std::vector<Value>(),
+          std::vector<Value*> children = std::vector<Value*>(),
           std::string op = "",
           std::string label = "");
     Value(float data, std::string label);
@@ -28,7 +29,7 @@ public:
     float get_data() const { return data; }
     float get_grad() const { return grad; }
     std::string get_label() const { return label; }
-    std::vector<Value> get_children() const { return children; }
+    std::vector<Value*> get_children() const { return children; }
     std::string get_op() const { return op; }
 
     std::string get_key() const {

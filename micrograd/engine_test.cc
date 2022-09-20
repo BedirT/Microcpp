@@ -97,9 +97,6 @@ void test_gradient_calculation_single_neuron()
     Value n = x1w1_x2w2 + b; n.set_label("n");
     // output w tanh
     Value o = n.tanh(); o.set_label("o");
-    assert(o.get_children()[0] == n);
-    assert(n.get_children()[0] == x1w1_x2w2);
-    assert(n.get_children()[1] == b);
 
     o.backward();
     Graph gs;
@@ -122,16 +119,64 @@ void test_float_ops()
     assert(v2.get_data() == 7.0);
 }
 
+void test_imitation_of_training()
+{
+    // Test imitation of training
+    float x1 = 2.0;
+    float x2 = 0.0;
+
+    // weights
+    float w1 = -3.0;
+    float w2 = 1.0;
+    float b = 6.8813735870195432;
+
+    // y target
+    float y = 0.0;
+
+    // backpropagation by converting all to values
+    Value v1(x1, "x1");
+    Value v2(x2, "x2");
+    Value v3(w1, "w1");
+    Value v4(w2, "w2");
+    Value v5(b, "b");
+
+    // neuron (x1*w1 + x2*w2 + b)
+    Value v6 = v1 * v3; v6.set_label("x1w1");
+    Value v7 = v2 * v4; v7.set_label("x2w2");
+    Value v8 = v6 + v7; v8.set_label("x1w1_x2w2");
+    Value v9 = v8 + v5; v9.set_label("n");
+
+    // output w tanh
+    Value v10 = v9.tanh(); v10.set_label("o");
+
+    // calculate gradient
+    v10.backward();
+
+    // update weight of w1
+    v3.set_data(v3.get_data() - 0.1 * v3.get_grad());
+
+    // check if the prediction is closer to the target
+    // imitate forward pass
+    Value v11 = v1 * v3; v11.set_label("x1w1");
+    Value v12 = v2 * v4; v12.set_label("x2w2");
+    Value v13 = v11 + v12; v13.set_label("x1w1_x2w2");
+    Value v14 = v13 + v5; v14.set_label("n");
+    Value v15 = v14.tanh(); v15.set_label("o");
+    
+    assert((v15.get_data() - y) < (v10.get_data() - y));
+}
+
 int main()
 {
-    test_value_constructor();
-    test_value_set();
-    test_value_to_string();
-    test_value_operations();
-    test_value_set_label();
-    test_graph_system();
-    test_tanh_function();
-    test_gradient_calculation_single_neuron();
-    test_integer_ops();
-    test_float_ops();
+    // test_value_constructor();
+    // test_value_set();
+    // test_value_to_string();
+    // test_value_operations();
+    // test_value_set_label();
+    // test_graph_system();
+    // test_tanh_function();
+    // test_gradient_calculation_single_neuron();
+    // test_integer_ops();
+    // test_float_ops();
+    test_imitation_of_training();
 }

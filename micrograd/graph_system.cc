@@ -87,11 +87,11 @@ public:
         }
         std::string node_key = v->get_key();
         nodes[node_key] = std::make_tuple(v->to_string(), v->get_label(), v->get_op(), v->get_grad(), v->get_data());
-        for (Value& child : v->get_children()) {
-            std::string child_key = child.get_key();
+        for (Value* child : v->get_children()) {
+            std::string child_key = child->get_key();
             if (edges.find(child_key + node_key) == edges.end()) {
                 edges[child_key + node_key] = std::make_pair(child_key, node_key);
-                trace_nodes_and_edges(&child);
+                trace_nodes_and_edges(child);
             }
         }
     }
