@@ -17,29 +17,55 @@ Micrograd is the minimalistic neural network system implementation from scratch.
 Using the graph system needs a root node:
 
 ```cpp
-auto x = var(3.0);
-auto y = var(4.0);
-auto z = x * y;
-auto gs = graph_system(z);
-gs.draw();
+auto x = Value(1.0);
+auto y = Value(2.0);
+auto z = x + y;
+z.backward();
+Graph gs;
+gs.draw(z);
 ```
 
-![Graphviz visualization of the computational graph]()
+Here is how to use the graph system, and calculating the gradients for single neuron; (also the image of the graph)
+
+```cpp
+Value x1 = Value(2.0, "x1");
+Value x2 = Value(0.0, "x2");
+// weights
+Value w1 = Value(-3.0, "w1");
+Value w2 = Value(1.0, "w2");
+// bias
+Value b = Value(6.8813735870195432, "b");
+// neuron (x1*w1 + x2*w2 + b)
+Value x1w1 = x1 * w1; x1w1.set_label("x1w1");
+Value x2w2 = x2 * w2; x2w2.set_label("x2w2");
+Value x1w1_x2w2 = x1w1 + x2w2; x1w1_x2w2.set_label("x1w1_x2w2");
+Value n = x1w1_x2w2 + b; n.set_label("n");
+// output w tanh
+Value o = n.tanh(); o.set_label("o");
+
+o.backward();
+Graph gs;
+gs.draw(o, "file_name");
+```
+
+![Graphviz visualization of the computational graph](micrograd/graph_single_neuron.png)
 
 The value class have basic operations overloaded:
 
 ```cpp
-auto x = var(3.0);
-auto y = var(4.0);
+auto x = Value(1.0);
+auto y = Value(2.0);
 auto z = x * y;
-z.value(); // 12
+z.value(); // 2.0
 auto z = x + y;
-z.value(); // 7
+z.value(); // 3.0
 auto z = x - y;
-z.value(); // -1
+z.value(); // -1.0
 auto z = x / y;
-z.value(); // 0.75
+z.value(); // 0.5
 // or more complex operations
 auto z = (x + y) * (x + y);
-z.value(); // 49
+z.value(); // 9.0
 ```
+
+*Discretion: There still is a bug on the neural network implementation, I am still trying to figure out what is the problem, but the rest of the implementation is still complete.*
