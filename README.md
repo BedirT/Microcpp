@@ -1,16 +1,16 @@
 # Microc++
       Micrograd in C++ 
 
-Hello there! This is my rendition of the micrograd by [Andrej Karpathy](https://www.youtube.com/watch?v=VMj-3S1tku0)/([repo](https://github.com/karpathy/micrograd)) with additional tools and all written in C++. I had a lot of fun working on this project, and I recommend anyone who is remotely interested in ML in C++ to give it a whirl.
+Hello there! This is my rendition of the micrograd by [Andrej Karpathy](https://www.youtube.com/watch?v=VMj-3S1tku0)/([repo](https://github.com/karpathy/micrograd)) with additional tools and all written in C++. I had a lot of fun working on this project, and I recommend anyone remotely interested in ML in C++ to give it a whirl.
 
-Here are the general guidelines and the differences from his implementations. I am not an expert in C++, especially in ML topics, but I think the implementation doesn't have much imperfections; if you do have any improvement suggestions please do contribute and let me know how the change makes an improvement over the existing code.
+Here are the general guidelines and the differences from his implementations. I am not an expert in C++, especially in ML topics, but I think the implementation doesn't have many imperfections; if you do have any improvement suggestions please do contribute and let me know how the change improves the existing code.
 
 ### Micrograd
 - Custom value and gradient system
 - Graphviz visualization of the computational graph
 - Fully working neural network implementation
 
-Micrograd is the minimalistic neural network system implementation from scratch. It is a very good introduction to the concepts of neural networks and how they work. It is also a good introduction to the concepts of automatic differentiation and computational graphs. The implementation is very minimalistic and is a good starting point for anyone who wants to learn about neural networks and how they work. All from video 1 of the series, do check it out!
+Micrograd is a minimalistic neural network system implementation from scratch. It is an outstanding introduction to the concepts of neural networks and how they work. The implementation is very minimalistic and is a good starting point for anyone who wants to learn about neural networks and how they work.
 
 #### Couple notes on the implementation
 Using the graph system needs a root node:
